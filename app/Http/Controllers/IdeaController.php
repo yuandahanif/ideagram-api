@@ -16,7 +16,7 @@ class IdeaController extends Controller
     public function index()
     {
         //
-        return Idea::with('owner')->with('location')->with('category')->with('feedbacks')->get();
+        return Idea::with('owner')->with('location')->with('category')->with('images')->with('feedbacks')->get();
     }
 
     /**

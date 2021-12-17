@@ -15,7 +15,7 @@ class CreateImagesIdeaTable extends Migration
     {
         Schema::create('image_idea', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()
+            $table->foreignId('idea_id')->constrained('ideas')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId('file_id')->constrained()

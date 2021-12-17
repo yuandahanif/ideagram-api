@@ -41,4 +41,12 @@ class Idea extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function images()
+    {
+        return $this->belongsToMany(File::class, 'image_idea', 'idea_id', 'file_id');
+    }
 }
