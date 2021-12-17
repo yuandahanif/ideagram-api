@@ -17,4 +17,12 @@ class Idea extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    /**
+     * Get all the feedback.
+     */
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
 }

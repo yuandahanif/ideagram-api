@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IdeaController;
+use App\Models\Feedback;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +34,5 @@ Route::group([
 
 ], function ($router) {
     Route::resource('ideas', IdeaController::class);
+    Route::resource('feedback', Feedback::class);
 });

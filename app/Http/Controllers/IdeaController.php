@@ -16,7 +16,7 @@ class IdeaController extends Controller
     public function index()
     {
         //
-        return Idea::with('owner')->get();
+        return Idea::with('owner')->with('feedbacks')->get();
     }
 
     /**
