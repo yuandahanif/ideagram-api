@@ -9,4 +9,12 @@ class Idea extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+
+    /**
+     * Get the owner.
+     */
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
