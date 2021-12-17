@@ -25,4 +25,20 @@ class Idea extends Model
     {
         return $this->hasMany(Feedback::class);
     }
+
+    /**
+     * Get the idea location.
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    /**
+     * Get the idea category.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
