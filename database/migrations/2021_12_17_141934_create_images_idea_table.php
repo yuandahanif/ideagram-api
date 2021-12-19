@@ -21,7 +21,6 @@ class CreateImagesIdeaTable extends Migration
             $table->foreignId('file_id')->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

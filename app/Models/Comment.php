@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Feedback extends Model
+class Comment extends Model
 {
     use HasFactory;
-    protected $table = 'feedbacks';
     protected $guarded = ['id'];
 
     /**
-     * Get the idea of this feedback.
+     * Get the idea of this comment.
      */
     public function idea()
     {
@@ -20,10 +19,10 @@ class Feedback extends Model
     }
 
     /**
-     * Get the all donation.
+     * Get the idea of this user.
      */
-    public function donations()
+    public function user()
     {
-        return $this->hasMany(Donation::class, 'feedback_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

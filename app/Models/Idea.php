@@ -49,4 +49,12 @@ class Idea extends Model
     {
         return $this->belongsToMany(File::class, 'image_idea', 'idea_id', 'file_id');
     }
+
+    /**
+     * Get all the comment.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

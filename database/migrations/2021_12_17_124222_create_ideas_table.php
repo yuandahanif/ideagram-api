@@ -17,6 +17,7 @@ class CreateIdeasTable extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description');
+            $table->dateTime('due_date');
             $table->foreignId('category_id')->constrained('categories')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
