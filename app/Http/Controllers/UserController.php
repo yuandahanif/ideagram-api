@@ -7,7 +7,7 @@ use App\Models\Idea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class IdeaController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -132,7 +132,7 @@ class IdeaController extends Controller
         }
         return response()->json([
             'message' => 'Error',
-            'idea' => $idea
+            'user' => $idea
         ], 404);
     }
 }

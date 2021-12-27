@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -25,7 +27,26 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'comment' => 'required|string',
+            'idea_id' => 'required|exists:App\Models\Idea,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user = User::where('id', auth()->user()->id)->first();
+
+        $comment = Comment::create(array_merge(
+            $validator->validated(),
+            ['user_id' => $user->id]
+        ));
+
+        return response()->json([
+            'message' => 'comment successfully added',
+            'comment' => $comment
+        ], 201);
     }
 
     /**
@@ -59,6 +80,16 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+
+        if ($comment->delete()) {
+            return response()->json([
+                'message' => 'comment successfully deleted',
+                'comment' => $comment
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Error',
+            'comment' => $comment
+        ], 404);
     }
 }
