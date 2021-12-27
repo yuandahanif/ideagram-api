@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\LocationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +34,13 @@ Route::group([
 
 Route::group([
     'middleware' => 'api',
-
 ], function ($router) {
     Route::resource('ideas', IdeaController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::resource('donations', DonationController::class);
+});
+
+Route::group([], function ($router) {
+    Route::resource('locations', LocationController::class);
+    Route::resource('categories', CategoryController::class);
 });

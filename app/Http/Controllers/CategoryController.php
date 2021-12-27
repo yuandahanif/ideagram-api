@@ -14,7 +14,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::get();
+        return response()->json([
+            'message' => 'get all category success',
+            'category' => $categories
+        ], 200);
     }
 
     /**
@@ -36,7 +40,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $category_ = Category::where('id', $category->id)->with('ideas')->first();
+        return response()->json([
+            'message' => 'get location success',
+            'category' => $category_
+        ], 200);
     }
 
     /**

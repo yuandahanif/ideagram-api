@@ -14,7 +14,11 @@ class LocationController extends Controller
      */
     public function index()
     {
-        //
+        $locations = Location::get();
+        return response()->json([
+            'message' => 'get all location success',
+            'location' => $locations
+        ], 200);
     }
 
     /**
@@ -36,7 +40,11 @@ class LocationController extends Controller
      */
     public function show(Location $location)
     {
-        //
+        $location_ = Location::where('id', $location->id)->with('ideas')->first();
+        return response()->json([
+            'message' => 'get location success',
+            'location' => $location_
+        ], 200);
     }
 
     /**

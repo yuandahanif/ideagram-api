@@ -15,6 +15,6 @@ class Location extends Model
      */
     public function ideas()
     {
-        return $this->hasMany(Location::class);
+        return $this->hasMany(Idea::class);
     }
 }
