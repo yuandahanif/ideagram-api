@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FeedbackController extends Controller
 {
@@ -14,7 +15,7 @@ class FeedbackController extends Controller
      */
     public function index()
     {
-        //
+        return 'not implemented';
     }
 
     /**
@@ -25,7 +26,25 @@ class FeedbackController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'donation_min' => 'required|integer',
+            'idea_id' => 'required|exists:App\Models\Idea,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $feedback = Feedback::create(array_merge(
+            $validator->validated()
+        ));
+
+        return response()->json([
+            'message' => 'Feedback successfully added',
+            'feedback' => $feedback
+        ], 201);
     }
 
     /**
@@ -36,7 +55,11 @@ class FeedbackController extends Controller
      */
     public function show(Feedback $feedback)
     {
-        //
+        $feedback_ =  Feedback::where('id', $feedback->id)->with('idea')->first();
+        return response()->json([
+            'message' => 'Feedback successfully added',
+            'feedback' => $feedback_
+        ], 200);
     }
 
     /**
@@ -48,7 +71,26 @@ class FeedbackController extends Controller
      */
     public function update(Request $request, Feedback $feedback)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'donation_min' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $feedback->name = $request->name;
+
+        if ($feedback->isDirty()) {
+            $feedback->save();
+        }
+
+        return response()->json([
+            'message' => 'Feedback successfully updated',
+            'feedback' => $feedback
+        ], 200);
     }
 
     /**
@@ -59,6 +101,15 @@ class FeedbackController extends Controller
      */
     public function destroy(Feedback $feedback)
     {
-        //
+        if ($feedback->delete()) {
+            return response()->json([
+                'message' => 'Feedback successfully deleted',
+                'feedback' => $feedback
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'delete feedback error',
+            'feedback' => $feedback
+        ], 404);
     }
 }

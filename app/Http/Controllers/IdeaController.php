@@ -16,8 +16,11 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        $ideas = Idea::with('owner')->with('location')->with('comments')->with('category')->with('images')->with('feedbacks')->get();
-        return $ideas;
+        $ideas = Idea::with('owner')->with('location')->with('category')->with('images')->get();
+        return response()->json([
+            'message' => 'get all Idea success',
+            'idea' => $ideas
+        ], 200);
     }
 
     /**
@@ -48,7 +51,7 @@ class IdeaController extends Controller
 
         return response()->json([
             'message' => 'Idea successfully added',
-            'user' => $idea
+            'idea' => $idea
         ], 201);
     }
 
@@ -60,8 +63,7 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        // $idea->with('owner')->with('location')->with('comments')->with('category')->with('images')->with('feedbacks');
-        $idea_info = Idea::find($idea->id)->with('owner')->with('location')->with('category')->with('images')->with('feedbacks')->with('comments')->first();
+        $idea_info = Idea::where('id', $idea->id)->with('owner')->with('location')->with('category')->with('images')->with('feedbacks')->with('comments')->first();
         $donation_total = 0;
         foreach ($idea_info->feedbacks as $f) {
             $donation = Donation::select()->where('feedback_id', $f->id)->get();
@@ -69,8 +71,10 @@ class IdeaController extends Controller
             $f->donation = $donation;
         }
         $idea_info->donation_total = $donation_total;
-        // return $idea_info->feedbacks;
-        return $idea_info;
+        return response()->json([
+            'message' => 'get Idea success',
+            'idea' => $idea_info
+        ], 200);
     }
 
     /**
@@ -104,8 +108,8 @@ class IdeaController extends Controller
 
         return response()->json([
             'message' => 'Idea successfully updated',
-            'user' => $idea
-        ], 201);
+            'idea' => $idea
+        ], 200);
     }
 
     /**
@@ -119,6 +123,16 @@ class IdeaController extends Controller
         $idea->comments()->delete();
         // $idea->feedbacks()->delete();
         $idea->images()->delete();
-        return $idea->delete();
+
+        if ($idea->delete()) {
+            return response()->json([
+                'message' => 'Idea successfully deleted',
+                'idea' => $idea
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Error',
+            'user' => $idea
+        ], 404);
     }
 }
