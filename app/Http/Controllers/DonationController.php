@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\donation;
+use App\Models\Donation;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DonationController extends Controller
 {
@@ -14,7 +16,13 @@ class DonationController extends Controller
      */
     public function index()
     {
-        //
+        $donations = User::where('id', auth()->user()->id)->with('donations')->with('donations.feedback')->with('donations.feedback.idea')->first();
+
+        return response()->json([
+            'message' => 'get all donation for current user success',
+            'user' => $donations
+            // 'donations' => auth()->user()
+        ], 200);
     }
 
     /**
@@ -25,7 +33,26 @@ class DonationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'feedback_id' => 'required|exists:App\Models\Feedback,id',
+            'amount' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user = User::where('id', auth()->user()->id)->first();
+
+        $donation = Donation::create(array_merge(
+            $validator->validated(),
+            ['user_id' => $user->id]
+        ));
+
+        return response()->json([
+            'message' => 'donation successfully created',
+            'donation' => $donation
+        ], 201);
     }
 
     /**
@@ -36,7 +63,11 @@ class DonationController extends Controller
      */
     public function show(donation $donation)
     {
-        //
+        $donation_ = Donation::where('id', $donation->id)->with('feedback')->with('feedback.idea')->first();
+        return response()->json([
+            'message' => 'get donation success',
+            'donation' => $donation_
+        ], 200);
     }
 
     /**

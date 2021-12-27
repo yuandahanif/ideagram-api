@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\IdeaController;
 
@@ -35,4 +36,5 @@ Route::group([
 ], function ($router) {
     Route::resource('ideas', IdeaController::class);
     Route::resource('feedback', FeedbackController::class);
+    Route::resource('donations', DonationController::class);
 });

@@ -102,7 +102,7 @@ class AuthController extends Controller
      */
     public function userProfile()
     {
-        $user = User::where('id', auth()->user()->id)->with('ideas')->first();
+        $user = User::where('id', auth()->user()->id)->first();
         return response()->json($user);
     }
 
