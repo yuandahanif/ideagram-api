@@ -17,7 +17,7 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        $comments = Comment::where('idea_id', $request->id)->with('user')->orderBy('id', 'DESC')->paginate();
+        $comments = Comment::where('idea_id', $request->id)->with('user')->orderBy('id', 'DESC')->get();
 
         return response()->json([
             'message' => 'get all comment for idea with id ' . $request->id,
