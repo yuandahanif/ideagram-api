@@ -41,10 +41,13 @@ Route::group([
     Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy']);
     Route::resource('feedback', FeedbackController::class);
     Route::resource('donations', DonationController::class);
-    Route::resource('comments', CommentController::class);
+    // Route::resource('comments', CommentController::class);
+    Route::post('/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
 
 Route::group([], function ($router) {
+    Route::get('/comments/{id}', [CommentController::class, 'index']);
     Route::get('/ideas', [IdeaController::class, 'index']);
     Route::get('/ideas/{idea}', [IdeaController::class, 'show']);
     Route::resource('locations', LocationController::class);

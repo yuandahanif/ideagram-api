@@ -63,7 +63,7 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        $idea_info = Idea::where('id', $idea->id)->with('owner')->with('location')->with('category')->with('images')->with('feedbacks')->with('comments')->first();
+        $idea_info = Idea::where('id', $idea->id)->with('owner')->with('location')->with('category')->with('images')->with('feedbacks')->first();
         $donation_total = 0;
         foreach ($idea_info->feedbacks as $f) {
             $donation = Donation::select()->where('feedback_id', $f->id)->get();
