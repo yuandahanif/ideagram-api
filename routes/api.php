@@ -36,13 +36,17 @@ Route::group([
 Route::group([
     'middleware' => 'api',
 ], function ($router) {
-    Route::resource('ideas', IdeaController::class);
+    Route::post('/ideas', [IdeaController::class, 'store']);
+    Route::patch('/ideas/{idea}', [IdeaController::class, 'update']);
+    Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy']);
     Route::resource('feedback', FeedbackController::class);
     Route::resource('donations', DonationController::class);
     Route::resource('comments', CommentController::class);
 });
 
 Route::group([], function ($router) {
+    Route::get('/ideas', [IdeaController::class, 'index']);
+    Route::get('/ideas/{idea}', [IdeaController::class, 'show']);
     Route::resource('locations', LocationController::class);
     Route::resource('categories', CategoryController::class);
 });
