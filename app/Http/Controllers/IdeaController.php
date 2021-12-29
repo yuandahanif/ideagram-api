@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Models\File;
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 class IdeaController extends Controller
@@ -71,26 +73,41 @@ class IdeaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function image(Request $request)
+    public function image(Request $request, Idea $idea)
     {
         // TODO: img
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:App\Models\Category,id',
-            'location_id' => 'required|exists:App\Models\Location,id',
-            'due_date' => 'required|date',
-            'donation_target' => 'required|integer',
-            'user_id' => 'required|exists:App\Models\User,id',
+            'photos' => 'required',
         ]);
-
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $idea = Idea::create(array_merge(
-            $validator->validated()
-        ));
+        if ($request->hasFile('photos')) {
+            foreach ($request->photos as $photo) {
+                $ext = $photo->extension();
+                if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'png') {
+                    $name = time() . '_' . Str::random(4) . '_' . Str::limit($idea->name, 5, '') . '.' . $ext;
+                    // Remove special accented characters - ie. sí.
+                    $clean_name = strtr($name, array('Š' => 'S', 'Ž' => 'Z', 'š' => 's', 'ž' => 'z', 'Ÿ' => 'Y', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'ÿ' => 'y'));
+                    $clean_name = strtr($clean_name, array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', 'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
+                    $clean_name = preg_replace(array('/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('_', '.', ''), $clean_name);
+
+                    $photo->storeAs('images', $clean_name);
+                    // dd($path);
+
+                    // $file = new File([
+                    //     'name' => $clean_name,
+                    //     'url' => url("/file/serve/" . $name)
+                    // ]);
+
+                    $idea->images()->create([
+                        'name' => $clean_name,
+                        'url' => url("/file/serve/" . $name)
+                    ]);
+                }
+            }
+        }
 
         return response()->json([
             'message' => 'Idea successfully added',

@@ -40,6 +40,7 @@ Route::group([
     Route::get('comments/{id}', [CommentController::class, 'index']);
     Route::post('comments', [CommentController::class, 'store']);
     Route::delete('comments/{comment}', [CommentController::class, 'delete']);
+    Route::post('ideas/{idea}/image', [IdeaController::class, 'image']);
     Route::resource('ideas', IdeaController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::resource('donations', DonationController::class);
