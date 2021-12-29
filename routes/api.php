@@ -21,10 +21,10 @@ use App\Http\Controllers\LocationController;
 |
 */
 
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
@@ -33,23 +33,16 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });
 
+
 Route::group([
     'middleware' => 'api',
 ], function ($router) {
-    Route::post('/ideas', [IdeaController::class, 'store']);
-    Route::patch('/ideas/{idea}', [IdeaController::class, 'update']);
-    Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy']);
+    Route::get('comments/{id}', [CommentController::class, 'index']);
+    Route::post('comments', [CommentController::class, 'store']);
+    Route::delete('comments/{comment}', [CommentController::class, 'delete']);
+    Route::resource('ideas', IdeaController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::resource('donations', DonationController::class);
-    // Route::resource('comments', CommentController::class);
-    Route::post('/comments', [CommentController::class, 'store']);
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
-});
-
-Route::group([], function ($router) {
-    Route::get('/comments/{id}', [CommentController::class, 'index']);
-    Route::get('/ideas', [IdeaController::class, 'index']);
-    Route::get('/ideas/{idea}', [IdeaController::class, 'show']);
     Route::resource('locations', LocationController::class);
     Route::resource('categories', CategoryController::class);
 });

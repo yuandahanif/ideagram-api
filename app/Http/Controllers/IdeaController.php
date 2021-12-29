@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Validator;
 class IdeaController extends Controller
 {
     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -31,6 +41,39 @@ class IdeaController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'category_id' => 'required|exists:App\Models\Category,id',
+            'location_id' => 'required|exists:App\Models\Location,id',
+            'due_date' => 'required|date',
+            'donation_target' => 'required|integer',
+            'user_id' => 'required|exists:App\Models\User,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $idea = Idea::create(array_merge(
+            $validator->validated()
+        ));
+
+        return response()->json([
+            'message' => 'Idea successfully added',
+            'idea' => $idea
+        ], 201);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function image(Request $request)
+    {
+        // TODO: img
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'required|string',
