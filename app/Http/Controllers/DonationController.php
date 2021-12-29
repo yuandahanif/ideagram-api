@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Models\Feedback;
+use App\Models\Idea;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -44,9 +46,17 @@ class DonationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'feedback_id' => 'required|exists:App\Models\Feedback,id',
+            'idea_id' => 'required|exists:App\Models\Idea,id',
             'amount' => 'required|integer',
         ]);
+
+        $fb = Feedback::where('idea_id', $request->idea_id)->where('donation_min', '<=', $request->amount)
+            ->orderBy('donation_min', 'DESC')->first();
+
+        if ($fb == null) {
+            $fb = Feedback::where('idea_id', $request->idea_id)
+                ->orderBy('donation_min', 'ASC')->first();
+        }
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
@@ -56,7 +66,7 @@ class DonationController extends Controller
 
         $donation = Donation::create(array_merge(
             $validator->validated(),
-            ['user_id' => $user->id]
+            ['user_id' => $user->id, 'feedback_id' => $fb->id]
         ));
 
         return response()->json([
