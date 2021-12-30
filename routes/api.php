@@ -48,4 +48,5 @@ Route::group([
     Route::resource('locations', LocationController::class);
     Route::resource('categories', CategoryController::class);
     Route::get('users/idea', [UserController::class, 'idea']);
+    Route::get('users/{user}/idea', [UserController::class, 'showIdea']);
 });

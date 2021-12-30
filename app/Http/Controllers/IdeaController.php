@@ -28,7 +28,7 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        $ideas = Idea::with('owner')->with('location')->with('category')->with('images')->get();
+        $ideas = Idea::with('owner')->with('location')->with('category')->with('images')->orderBy('id', 'DESC')->get();
         return response()->json([
             'message' => 'get all Idea success',
             'idea' => $ideas
@@ -102,7 +102,7 @@ class IdeaController extends Controller
 
                     $idea->images()->create([
                         'name' => $clean_name,
-                        'url' => url("/file/serve/" . $name)
+                        'url' => url("/file/serve/" . $clean_name)
                     ]);
                 }
             }

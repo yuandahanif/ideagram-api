@@ -25,7 +25,7 @@ Route::get('file/serve/{name}', function ($name) {
         // return response()->file(Storage::url('images/' . $file->name));
         return (new Response($f, 200))->header('Content-Type', 'image/jpeg');
     }
-    return response()->file('https://live.staticflickr.com/4205/35047763926_6e8ca0e027_c.jpg');
+    return response()->redirectTo('https://live.staticflickr.com/4205/35047763926_6e8ca0e027_c.jpg');
 });
 
 Route::get('/', function () {

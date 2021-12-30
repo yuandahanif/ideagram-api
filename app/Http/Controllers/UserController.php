@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use App\Models\Idea;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +18,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+        $this->middleware('auth:api', ['except' => ['index', 'show', 'showIdea']]);
     }
 
     /**
@@ -41,9 +42,25 @@ class UserController extends Controller
      */
     public function idea()
     {
-        $ideas = Idea::where('user_id', auth()->user()->id)->with('location')->with('category')->with('images')->get();
+        $ideas = Idea::where('user_id', auth()->user()->id)->with('location')->with('category')->with('images')->orderBy('id', 'DESC')->get();
         return response()->json([
             'message' => 'get all Idea success',
+            'idea' => $ideas
+        ], 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function showIdea(User $user)
+    {
+        $ideas = Idea::where('user_id', $user->id)->with('location')->with('category')->with('images')->orderBy('id', 'DESC')->get();
+        return response()->json([
+            'message' => 'get all Idea success',
+            'user' => $user,
             'idea' => $ideas
         ], 200);
     }
