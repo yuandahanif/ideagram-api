@@ -9,6 +9,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,4 +47,5 @@ Route::group([
     Route::resource('donations', DonationController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('categories', CategoryController::class);
+    Route::get('users/idea', [UserController::class, 'idea']);
 });

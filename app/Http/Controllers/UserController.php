@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +28,20 @@ class UserController extends Controller
     public function index()
     {
         $ideas = Idea::with('owner')->with('location')->with('category')->with('images')->get();
+        return response()->json([
+            'message' => 'get all Idea success',
+            'idea' => $ideas
+        ], 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function idea()
+    {
+        $ideas = Idea::where('user_id', auth()->user()->id)->with('location')->with('category')->with('images')->get();
         return response()->json([
             'message' => 'get all Idea success',
             'idea' => $ideas
